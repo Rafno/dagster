@@ -1,7 +1,0 @@
-dagster
-dagster-webserver
-dagit
-pandas
-requests
-duckdb
-numpy
