@@ -29,5 +29,5 @@ def read_excel_file(context):
 
 
 @asset
-def read_my(context):
-    pass
+def read_my() -> int:
+    return 5
