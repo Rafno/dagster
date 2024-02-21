@@ -7,5 +7,5 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./pipelines:/opt/dagster/app/
+      - ./medicine:/opt/dagster/dagster_home/medicine
       - ./data:/opt/dagster/data/
