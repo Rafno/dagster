@@ -6,8 +6,6 @@ ENV DAGSTER_HOME=/opt/dagster/dagster_home/
 
 COPY pyproject.toml setup.cfg setup.py /opt/dagster/dagster_home/
 
-COPY medicine /opt/dagster/dagster_home/medicine
-
 WORKDIR /opt/dagster/dagster_home
 
 RUN pip install .
