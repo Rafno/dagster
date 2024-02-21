@@ -7,5 +7,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./medicine:/opt/dagster/dagster_home/medicine
-      - ./data:/opt/dagster/data/
+      - ./hearthstone:/opt/dagster/dagster_home/hearthstone

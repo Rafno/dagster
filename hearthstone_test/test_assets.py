@@ -1,4 +1,4 @@
-from medicine.assets import read_my
+from hearthstone.assets import read_my
 
 
 def test_read_my():

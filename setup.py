@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="medicine",
-    packages=find_packages(where=".", exclude=["medicine_tests"]),
+    name="hearthstone",
+    packages=find_packages(where=".", exclude=["hearthstone_tests"]),
     install_requires=[
         "dagster",
         "dagster-cloud",
