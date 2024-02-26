@@ -26,3 +26,8 @@ def read_excel_file(context):
     context.log.info("Exported DataFrame to Markdown format")
 
     return df
+
+
+@asset
+def read_my(context):
+    return None

@@ -28,10 +28,10 @@ You can specify new Python dependencies in `setup.py`.
 
 ### Unit testing
 
-Tests are in the `medicine_tests` directory and you can run tests using `pytest`:
+Tests are in the `heartstone_tests` directory and you can run tests using `pytest`:
 
 ```bash
-pytest medicine_tests
+pytest hearthstone_test
 ```
 
 ### Schedules and sensors
