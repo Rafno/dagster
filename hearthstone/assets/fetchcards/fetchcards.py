@@ -8,8 +8,18 @@ from dagster import AssetExecutionContext, AssetMaterialization, MetadataValue, 
 
 @asset
 def get_hearthstone_cards(context):
-    cards = hearthstone_api.get_all_hearthstone_cards(context)
-    context.log.info(f"First {cards[:100]} lines")
+    deck = hearthstone_api.get_all_hearthstone_cards(context)
+    first_card = deck['cards'][0]
+    context.log.info(first_card)
+
+    markdown_list = "\n".join([f"- {key}" for key in first_card.keys()])
+
+    metadata_dict = {
+        "key_values": MetadataValue.md(markdown_list),
+        "example_image_url": MetadataValue.md(f"![Card Image]({first_card['image']['en_US']})")
+    }
+    context.add_output_metadata(metadata=metadata_dict)
+
 
 # @asset
 # def get_hearthstone_cards(context):
