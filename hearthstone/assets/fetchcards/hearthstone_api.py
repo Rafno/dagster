@@ -42,8 +42,13 @@ def get_all_hearthstone_cards(context) -> str:
 
     payload = ""
 
-    response = requests.request("GET", reqUrl, data=payload,  headers=headersList)
+    response = requests.get(reqUrl, data=payload,  headers=headersList)
     context.log.info(f"status code was {response.status_code}")
-    return response.text
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        context.log.error(response.text)
+        return None
 
 
