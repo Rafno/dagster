@@ -4,11 +4,12 @@ setup(
     name="hearthstone",
     packages=find_packages(where=".", exclude=["hearthstone_tests"]),
     install_requires=[
+        "duckdb",
         "dagster",
         "dagster-cloud",
         "dagster-webserver",
         "openpyxl",
         "pandas",
     ],
-    extras_require={"dev": ["duckdb", "pytest"]},
+    extras_require={"dev": ["pytest"]},
 )

@@ -8,8 +8,7 @@ COPY pyproject.toml setup.cfg setup.py .env /opt/dagster/dagster_home/
 
 WORKDIR /opt/dagster/dagster_home
 
-RUN pip install .
-
+RUN pip install -e ".[dev]"
 EXPOSE 3000
 
 ENTRYPOINT ["dagster", "dev", "-h", "0.0.0.0", "-p", "3000"]
