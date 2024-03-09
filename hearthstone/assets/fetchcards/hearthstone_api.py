@@ -4,15 +4,7 @@ import requests
 from dotenv import load_dotenv
 
 from dagster import AssetExecutionContext, AssetMaterialization, MetadataValue
-
-
-def __get_access_token():
-    load_dotenv()
-
-    # Access environment variables
-    BATTLENET_CLIENT_ID = os.getenv("BATTLENET_CLIENT_ID")
-    BATTLENET_CLIENT_SECRET = os.getenv("BATTLENET_CLIENT_SECRET")
-    return BATTLENET_CLIENT_ID, BATTLENET_CLIENT_SECRET
+from ...constants import BATTLENET_CLIENT_ID, BATTLENET_CLIENT_SECRET
 
 
 def generate_bearer_token(context, client_id, client_secret) -> str:
@@ -35,10 +27,9 @@ def generate_bearer_token(context, client_id, client_secret) -> str:
         return None
 
 
-def get_all_hearthstone_cards(context) -> str:
+def get_all_hearthstone_cards(context) -> list:
     reqUrl = "https://eu.api.blizzard.com/hearthstone/cards/"
-    client_id, client_secret = __get_access_token()
-    token = generate_bearer_token(context, client_id, client_secret)
+    token = generate_bearer_token(context, BATTLENET_CLIENT_ID, BATTLENET_CLIENT_SECRET)
 
     headersList = {
         "Accept": "*/*",
@@ -46,13 +37,26 @@ def get_all_hearthstone_cards(context) -> str:
         "Authorization": f"bearer {token}",
     }
 
-    payload = ""
+    all_cards = []  # List to store all fetched cards
 
-    response = requests.get(reqUrl, data=payload, headers=headersList)
-    context.log.info(f"status code was {response.status_code}")
 
-    if response.status_code == 200:
-        return response.json()
-    else:
-        context.log.error("Failed to fetch hearthstone cards")
-        return None
+    page = 1
+    while True:
+        context.log.info(f"Fetching page {page}")
+        response = requests.get(reqUrl, headers=headersList)
+        context.log.info(f"status code was {response.status_code}")
+
+        if response.status_code == 200:
+            data = response.json()
+            all_cards.extend(data["cards"])  # Append fetched cards to the list
+
+            # Check if there are more pages
+            if page >= data["pageCount"]:
+                break  # Exit loop if reached last page
+
+            page += 1  # Move to the next page
+        else:
+            context.log.error("Failed to fetch hearthstone cards")
+            return None
+
+    return all_cards

@@ -19,3 +19,6 @@ if os.getenv("DAGSTER_DBT_PARSE_PROJECT_ON_LOAD"):
     )
 else:
     dbt_manifest_path = dbt_project_dir.joinpath("target", "manifest.json")
+
+BATTLENET_CLIENT_ID = os.getenv("BATTLENET_CLIENT_ID")
+BATTLENET_CLIENT_SECRET = os.getenv("BATTLENET_CLIENT_SECRET")
