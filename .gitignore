@@ -175,3 +175,5 @@ scripts/.build
 
 # dbt .user files
 .user.yml
+
+tutorial.*

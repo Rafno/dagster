@@ -4,7 +4,7 @@ RUN mkdir -p /opt/dagster/dagster_home
 
 ENV DAGSTER_HOME=/opt/dagster/dagster_home/
 
-COPY pyproject.toml setup.cfg setup.py .env /opt/dagster/dagster_home/
+COPY pyproject.toml setup.cfg setup.py .env dbt_project.yml /opt/dagster/dagster_home/
 
 WORKDIR /opt/dagster/dagster_home
 

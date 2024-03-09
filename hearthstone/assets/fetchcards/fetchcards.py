@@ -1,5 +1,5 @@
 from io import BytesIO
-
+import os
 import duckdb
 import pandas as pd
 import requests
@@ -79,12 +79,12 @@ def flatten_cards_asset(context, get_hearthstone_cards_asset):
     return flat_deck
 
 @asset(compute_kind="python")
-def stg_cards(context, flatten_cards_asset):
+def raw_cards(context, flatten_cards_asset):
     deck = flatten_cards_asset
     connection = duckdb.connect(os.fspath(duckdb_database_path))
     connection.execute("create schema if not exists api")
     connection.execute(
-        "create or replace table api.stg_cards as select * from deck"
+        "create or replace table api.raw_cards as select * from deck"
     )
 
     # Log some metadata about the table we just wrote. It will show up in the UI.
