@@ -8,6 +8,8 @@ setup(
         "dagster",
         "dagster-cloud",
         "dagster-webserver",
+        "dagster_dbt",
+        "dbt-duckdb",
         "openpyxl",
         "pandas",
     ],

@@ -6,11 +6,14 @@ import requests
 from pandas import DataFrame
 
 from dagster import AssetExecutionContext, AssetMaterialization, MetadataValue, asset
+from dagster_dbt import DbtCliResource, dbt_assets
 
 from . import hearthstone_api
+from ...constants import dbt_manifest_path, dbt_project_dir
 
+duckdb_database_path = dbt_project_dir.joinpath("tutorial.duckdb")
 
-@asset
+@asset(compute_kind="python")
 def get_hearthstone_cards_asset(context):
     deck = hearthstone_api.get_all_hearthstone_cards(context)
     first_card = deck["cards"][0]
@@ -55,20 +58,38 @@ def flatten_json(nested_json, exclude=[""]):
     return out
 
 
-@asset()
+@asset(compute_kind="python")
 def flatten_cards_asset(context, get_hearthstone_cards_asset):
     deck = get_hearthstone_cards_asset
-    df = pd.DataFrame([flatten_json(x) for x in deck["cards"]])
-    context.log.info(df)
+    flat_deck = pd.DataFrame([flatten_json(x) for x in deck["cards"]])
+    context.log.info(flat_deck)
 
     # Convert DataFrame to Markdown
-    markdown_str = df.head(5).to_markdown()  # Convert first 5 rows to Markdown
+    markdown_str = flat_deck.head(5).to_markdown()  # Convert first 5 rows to Markdown
 
     # Log metadata and materialize the asset
     metadata_dict = {
         # "column_names": list(df.columns),
-        "row_count": len(df),
+        "row_count": len(flat_deck),
         "preview": MetadataValue.md(markdown_str),
     }
     context.add_output_metadata(metadata=metadata_dict)
     context.log.info("Exported DataFrame to Markdown format")
+
+    return flat_deck
+
+@asset(compute_kind="python")
+def stg_cards(context, flatten_cards_asset):
+    deck = flatten_cards_asset
+    connection = duckdb.connect(os.fspath(duckdb_database_path))
+    connection.execute("create schema if not exists api")
+    connection.execute(
+        "create or replace table api.stg_cards as select * from deck"
+    )
+
+    # Log some metadata about the table we just wrote. It will show up in the UI.
+    context.add_output_metadata({"num_rows": deck.shape[0]})
+
+@dbt_assets(manifest=dbt_manifest_path)
+def card_dbt_assets(context:AssetExecutionContext, dbt:DbtCliResource):
+    yield from dbt.cli(["build"], context=context).stream()
