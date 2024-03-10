@@ -1,0 +1,85 @@
+version: 1
+
+models:
+  - name: card
+    +schema: hearthstone
+    +materialized: table
+    columns:
+      - name: card_id
+        description: Unique identifier for the card
+        tests:
+          - unique
+        type: integer
+      - name: collectible
+        description: Indicates if the card is collectible
+        type: boolean
+      - name: slug
+        description: Slug for the card
+        type: string
+      - name: class_id
+        description: Identifier for the class of the card
+        type: integer
+      - name: spell_school_id
+        description: Identifier for the spell school of the card
+        type: integer
+      - name: card_type_id
+        description: Identifier for the type of the card
+        type: integer
+      - name: card_set_id
+        description: Identifier for the set of the card
+        type: integer
+      - name: rarity_id
+        description: Identifier for the rarity of the card
+        type: integer
+      - name: artist_name
+        description: Name of the artist who created the card
+        type: string
+      - name: mana_cost
+        description: Mana cost of the card
+        type: integer
+      - name: card_name
+        description: Name of the card in English (US)
+        type: string
+      - name: card_text
+        description: Text of the card in English (US)
+        type: string
+      - name: card_image
+        description: Image of the card in English (US)
+        type: string
+      - name: crop_image
+        description: Cropped image of the card
+        type: string
+      - name: keywords_0
+        description: First keyword identifier associated with the card
+        type: integer
+      - name: keywords_1
+        description: Second keyword identifier associated with the card
+        type: integer
+      - name: keywords_2
+        description: Third keyword identifier associated with the card
+        type: integer
+      - name: is_zilliax_functional_module
+        description: Indicates if the card is a functional module of Zilliax
+        type: boolean
+      - name: is_zilliax_cosmetic_module
+        description: Indicates if the card is a cosmetic module of Zilliax
+        type: boolean
+      - name: duels_relevant
+        description: Indicates if the card is relevant in duels mode
+        type: boolean
+      - name: duels_constructed
+        description: Indicates if the card is relevant in constructed duels mode
+        type: boolean
+      - name: copy_of_card_id
+        description: Identifier of the original card if this is a copy
+        type: integer
+      - name: health
+        description: Health points of the card (if applicable)
+        type: integer
+      - name: attack
+        description: Attack points of the card (if applicable)
+        type: integer
+      - name: minion_type_id
+        description: Identifier for the minion type of the card (if applicable)
+        type: integer
+

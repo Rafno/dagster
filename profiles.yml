@@ -1,7 +1,17 @@
 duckdbt:
   target: dev
   outputs:
-    dev:
-      type: duckdb
-      path: tutorial.duckdb
-      threads: 24
+      dev:
+        type: duckdb
+        path: tutorial.duckdb
+
+      staging:
+        type: postgres
+        account: "{{ env_var('POSTGRES_ACCOUNT') }}"
+
+        # User/password auth
+        user: "{{ env_var('POSTGRES_USER') }}"
+        password: "{{ env_var('POSTGRES_PASSWORD') }}"
+
+        dbname: DEMO_DB_STAGING
+        schema: tutorial

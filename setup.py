@@ -12,6 +12,7 @@ setup(
         "dbt-duckdb",
         "openpyxl",
         "pandas",
+        "streamlit",
     ],
     extras_require={"dev": ["pytest"]},
 )

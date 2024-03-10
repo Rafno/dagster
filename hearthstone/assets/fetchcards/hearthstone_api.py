@@ -47,16 +47,18 @@ def get_all_hearthstone_cards(context) -> list:
         context.log.info(f"status code was {response.status_code}")
 
         if response.status_code == 200:
-            data = response.json()
-            all_cards.extend(data["cards"])  # Append fetched cards to the list
-
             # Check if there are more pages
+            data = response.json()
+           
             if page >= data["pageCount"]:
                 break  # Exit loop if reached last page
+
+            all_cards.extend(data["cards"])  # Append fetched cards to the list
 
             page += 1  # Move to the next page
         else:
             context.log.error("Failed to fetch hearthstone cards")
+            context.log.error(response.text)
             return None
 
     return all_cards

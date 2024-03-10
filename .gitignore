@@ -177,3 +177,5 @@ scripts/.build
 .user.yml
 
 tutorial.*
+
+tmp*

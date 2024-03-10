@@ -16,7 +16,8 @@ duckdb_database_path = dbt_project_dir.joinpath("tutorial.duckdb")
 @asset(compute_kind="python")
 def get_hearthstone_cards_asset(context):
     deck = hearthstone_api.get_all_hearthstone_cards(context)
-    first_card = deck["cards"][0]
+    context.log.info(deck)
+    first_card = deck[0]
     context.log.info(first_card)
 
     markdown_list = "\n".join([f"- {key}" for key in first_card.keys()])
@@ -28,7 +29,10 @@ def get_hearthstone_cards_asset(context):
         "json_example": MetadataValue.md(str(first_card)),
     }
     context.add_output_metadata(metadata=metadata_dict)
-    return deck
+
+    flat_deck = pd.DataFrame([flatten_json(x) for x in deck])
+
+    return flat_deck
 
 
 def flatten_json(nested_json, exclude=[""]):
@@ -59,28 +63,8 @@ def flatten_json(nested_json, exclude=[""]):
 
 
 @asset(compute_kind="python")
-def flatten_cards_asset(context, get_hearthstone_cards_asset):
+def raw_cards(context, get_hearthstone_cards_asset):
     deck = get_hearthstone_cards_asset
-    flat_deck = pd.DataFrame([flatten_json(x) for x in deck["cards"]])
-    context.log.info(flat_deck)
-
-    # Convert DataFrame to Markdown
-    markdown_str = flat_deck.head(5).to_markdown()  # Convert first 5 rows to Markdown
-
-    # Log metadata and materialize the asset
-    metadata_dict = {
-        # "column_names": list(df.columns),
-        "row_count": len(flat_deck),
-        "preview": MetadataValue.md(markdown_str),
-    }
-    context.add_output_metadata(metadata=metadata_dict)
-    context.log.info("Exported DataFrame to Markdown format")
-
-    return flat_deck
-
-@asset(compute_kind="python")
-def raw_cards(context, flatten_cards_asset):
-    deck = flatten_cards_asset
     connection = duckdb.connect(os.fspath(duckdb_database_path))
     connection.execute("create schema if not exists api")
     connection.execute(
