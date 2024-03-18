@@ -1,9 +1,11 @@
 import os
+import time
 
 import requests
 from dotenv import load_dotenv
 
 from dagster import AssetExecutionContext, AssetMaterialization, MetadataValue
+
 from ...constants import BATTLENET_CLIENT_ID, BATTLENET_CLIENT_SECRET
 
 
@@ -39,17 +41,17 @@ def get_all_hearthstone_cards(context) -> list:
 
     all_cards = []  # List to store all fetched cards
 
-
     page = 1
     while True:
         context.log.info(f"Fetching page {page}")
+        time.sleep(1)
         response = requests.get(reqUrl, headers=headersList)
         context.log.info(f"status code was {response.status_code}")
 
         if response.status_code == 200:
             # Check if there are more pages
             data = response.json()
-           
+
             if page >= data["pageCount"]:
                 break  # Exit loop if reached last page
 
@@ -62,3 +64,25 @@ def get_all_hearthstone_cards(context) -> list:
             return None
 
     return all_cards
+
+
+def get_all_hearthstone_metadata(context) -> list:
+    reqUrl = "https://eu.api.blizzard.com/hearthstone/metadata?locale=en_US"  # Only English translations
+    token = generate_bearer_token(context, BATTLENET_CLIENT_ID, BATTLENET_CLIENT_SECRET)
+
+    headersList = {
+        "Accept": "*/*",
+        "User-Agent": "application/json",
+        "Authorization": f"bearer {token}",
+    }
+
+    response = requests.get(reqUrl, headers=headersList)
+    context.log.info(f"status code was {response.status_code}")
+
+    if response.status_code != 200:
+        context.log.error("Failed to fetch hearthstone cards")
+        context.log.error(response.text)
+
+    metadata = response.json()
+
+    return metadata
